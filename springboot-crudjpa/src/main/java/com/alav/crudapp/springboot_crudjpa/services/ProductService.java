@@ -12,6 +12,9 @@ public interface ProductService {
     Optional<Product>findById(Long id);
 
     Product save(Product product);
+    
+    //Esto es para actualizar el producto, se necesita el id y el producto.
+    Product update(Long id, Product product);
 
-    Optional<Product> delete(Product product);
+    Optional<Product> delete(Long id);
 }

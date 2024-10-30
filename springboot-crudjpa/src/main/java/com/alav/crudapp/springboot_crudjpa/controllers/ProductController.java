@@ -45,17 +45,20 @@ public class ProductController {
     public ResponseEntity<Product> create(@RequestBody Product product){
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(product));
     }
+    
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product){
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(product));
-    }
+        //Este método actualiza un producto por su id, si no lo encuentra devuelve un 404
+        Product productUpdated = service.update(id, product);
+        if(productUpdated != null){
+            return ResponseEntity.status(HttpStatus.CREATED).body(productUpdated);      
+    } return ResponseEntity.notFound().build();
+}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        Product product = new Product();
-        product.setId(id);
-        Optional<Product> productOptional =  service.delete(product);
+        Optional<Product> productOptional =  service.delete(id);
         if(productOptional.isPresent()){
             return ResponseEntity.ok(productOptional.orElseThrow());
         }else {

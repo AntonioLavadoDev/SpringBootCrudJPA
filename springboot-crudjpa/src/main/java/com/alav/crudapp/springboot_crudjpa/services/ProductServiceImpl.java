@@ -34,10 +34,27 @@ public class ProductServiceImpl implements ProductService {
         return repository.save(product);
     }
 
+    @Override
+    @Transactional
+    public Product update(Long id, Product product) {
+        Optional<Product> productOptional = repository.findById(id);
+        //este if es para verificar si el producto existe, si no existe no se puede actualizar.
+        if(productOptional.isPresent()) {
+            Product productDb = productOptional.orElseThrow();
+            productDb.setName(product.getName());
+            productDb.setPrice(product.getPrice());
+            productDb.setDescription(product.getDescription());
+            return Optional.of(repository.save(productDb)).orElseThrow();
+        }
+        return productOptional.orElseThrow();
+    }
+    
+    
+
     @Transactional
     @Override
-    public Optional<Product> delete(Product product) {
-        Optional<Product> productOptional = repository.findById(product.getId());
+    public Optional<Product> delete(Long id) {
+        Optional<Product> productOptional = repository.findById(id);
         productOptional.ifPresent(productDb -> {
             repository.delete(productDb);
         });
@@ -45,5 +62,9 @@ public class ProductServiceImpl implements ProductService {
         return productOptional;
         
     }
+
+    
+
+    
 
 }
